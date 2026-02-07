@@ -1,0 +1,19 @@
+node_modules
+npm - debug.log
+dist
+coverage
+    .git
+    .gitignore
+README.md
+    .eslintrc.json
+    .prettierrc
+tsconfig.json
+jest.config.js
+    .env
+    .env.*.local
+__tests__
+    .DS_Store
+    *.mp4
+    *.png
+    *.jpg
+    *.jpeg
