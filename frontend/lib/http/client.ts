@@ -13,7 +13,7 @@
  */
 
 import { config } from '@/config';
-import { createAppError, ErrorCode, normalizeError, type AppError } from './errors';
+import { createAppError, ErrorCode, normalizeError, type AppError } from '@/lib/errors';
 
 export interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
@@ -37,10 +37,10 @@ function createTimeoutSignal(ms: number): AbortSignal {
   const signal = controller.signal;
   const originalListener = signal.onabort;
 
-  signal.onabort = () => {
+  signal.onabort = (event: Event) => {
     clearTimeout(timeoutId);
     if (originalListener) {
-      originalListener.call(signal);
+      originalListener.call(signal, event);
     }
   };
 

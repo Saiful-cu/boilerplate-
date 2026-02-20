@@ -21,7 +21,7 @@ interface EnvironmentConfig {
  * Validates that a required environment variable exists and returns its value.
  * Throws an error if the variable is missing or empty.
  */
-function getRequiredEnvVar(key: string): string {
+export function getRequiredEnvVar(key: string): string {
   const value = process.env[key];
 
   if (!value || value.trim() === '') {
@@ -77,7 +77,7 @@ function getEnvironment(): 'development' | 'staging' | 'production' {
  */
 function initializeConfig(): EnvironmentConfig {
   // Use an explicit default so frontend doesn't crash when .env.local is missing
-  const defaultApi = 'http://localhost:4000';
+  const defaultApi = 'http://localhost:5000';
   const apiBaseUrl = getOptionalEnvVar('NEXT_PUBLIC_API_BASE_URL', defaultApi);
 
   // Inform developer if using default in development mode

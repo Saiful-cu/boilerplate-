@@ -3,10 +3,13 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { getUserFriendlyMessage, isAppError, type AppError } from '@/lib/errors';
+import { Box, Typography, Button, Paper } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface ErrorProps {
-  error: Error & { digest?: string };
-  reset: () => void;
+    error: Error & { digest?: string };
+    reset: () => void;
 }
 
 /**
@@ -21,58 +24,85 @@ interface ErrorProps {
  * Internal error details are logged for debugging but not shown to users.
  */
 export default function GlobalError({ error, reset }: ErrorProps): ReactNode {
-  useEffect(() => {
-    // Log error details for debugging (server-side logging)
-    console.error('Application error:', {
-      message: error.message,
-      digest: error.digest,
-      stack: error.stack,
-    });
-  }, [error]);
+    useEffect(() => {
+        console.error('Application error:', {
+            message: error.message,
+            digest: error.digest,
+            stack: error.stack,
+        });
+    }, [error]);
 
-  // Determine user-friendly message
-  let userMessage = 'Something went wrong. Please try again.';
+    let userMessage = 'Something went wrong. Please try again.';
 
-  if (isAppError(error as unknown as AppError)) {
-    const appError = error as unknown as AppError;
-    userMessage = getUserFriendlyMessage(appError.code);
-  }
+    if (isAppError(error as unknown as AppError)) {
+        const appError = error as unknown as AppError;
+        userMessage = getUserFriendlyMessage(appError.code);
+    }
 
-  return (
-    <html lang="en">
-      <body>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            fontFamily: 'sans-serif',
-            padding: '20px',
-          }}
-        >
-          <div style={{ textAlign: 'center', maxWidth: '500px' }}>
-            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Error</h1>
-            <p style={{ fontSize: '16px', marginBottom: '24px', color: '#666' }}>
-              {userMessage}
-            </p>
-            <button
-              onClick={reset}
-              style={{
-                padding: '10px 20px',
-                fontSize: '14px',
-                backgroundColor: '#0070f3',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Try again
-            </button>
-          </div>
-        </div>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '100vh',
+                        px: 3,
+                        py: 4,
+                        bgcolor: 'grey.50',
+                    }}
+                >
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            textAlign: 'center',
+                            maxWidth: 480,
+                            width: '100%',
+                            p: 5,
+                            borderRadius: 1,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: 80,
+                                height: 80,
+                                borderRadius: '20%',
+                                bgcolor: 'error.light',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mx: 'auto',
+                                mb: 3,
+                            }}
+                        >
+                            <ErrorOutlineIcon sx={{ fontSize: 48, color: 'error.main' }} />
+                        </Box>
+                        <Typography variant="h5" fontWeight={700} gutterBottom>
+                            Something Went Wrong
+                        </Typography>
+                        <Typography color="text.secondary" sx={{ mb: 4, fontSize: '1rem' }}>
+                            {userMessage}
+                        </Typography>
+                        <Button
+                            onClick={reset}
+                            variant="contained"
+                            size="large"
+                            startIcon={<RefreshIcon />}
+                            sx={{
+                                borderRadius: 3,
+                                py: 1.5,
+                                px: 4,
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                fontSize: '1rem',
+                            }}
+                        >
+                            Try Again
+                        </Button>
+                    </Paper>
+                </Box>
+            </body>
+        </html>
+    );
 }

@@ -1,62 +1,108 @@
-import type { ReactNode } from 'react';
-import { config } from '@/config';
+'use client';
+
+import { useState, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import api from '@/lib/api';
+import {
+    HeroSection,
+    ProductGridSection,
+    CollectionBanners,
+    CategoryGrid,
+    PromotionalCards,
+    FeaturesSection,
+    NewsletterSection,
+} from '@/components/home';
+
+interface HomepageSection {
+    _id: string;
+    type: string;
+    title?: string;
+    order: number;
+    isActive: boolean;
+    config: Record<string, unknown>;
+}
 
 /**
- * Home page
+ * Home page component - Dynamic sections managed by admin
  */
-export default function Home(): ReactNode {
-  return (
-    <main
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        fontFamily: 'sans-serif',
-        padding: '20px',
-        backgroundColor: '#f9f9f9',
-      }}
-    >
-      <div style={{ textAlign: 'center', maxWidth: '600px' }}>
-        <h1 style={{ fontSize: '32px', marginBottom: '16px' }}>Welcome</h1>
-        <p style={{ fontSize: '16px', marginBottom: '24px', color: '#666' }}>
-          This is a production-grade boilerplate with strict engineering standards.
-        </p>
+export default function Home() {
+    const [sections, setSections] = useState<HomepageSection[]>([]);
+    const [loading, setLoading] = useState(true);
 
-        <div
-          style={{
-            backgroundColor: '#fff',
-            padding: '24px',
-            borderRadius: '8px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            textAlign: 'left',
-            marginBottom: '24px',
-          }}
-        >
-          <h2 style={{ fontSize: '18px', marginBottom: '12px' }}>Configuration</h2>
-          <p style={{ fontSize: '14px', margin: '8px 0' }}>
-            <strong>Environment:</strong> {config.environment}
-          </p>
-          <p style={{ fontSize: '14px', margin: '8px 0' }}>
-            <strong>API Base URL:</strong> {config.apiBaseUrl}
-          </p>
-        </div>
+    useEffect(() => {
+        fetchHomeLayout();
+    }, []);
 
-        <div
-          style={{
-            backgroundColor: '#f0f7ff',
-            padding: '16px',
-            borderRadius: '8px',
-            fontSize: '14px',
-            color: '#0070f3',
-          }}
-        >
-          <p>
-            Check the frontend README for instructions on getting started with development.
-          </p>
-        </div>
-      </div>
-    </main>
-  );
+    const fetchHomeLayout = async () => {
+        try {
+            const response = await api.get('/homepage');
+            const activeSections = (response.data.sections as HomepageSection[])
+                .filter((section) => section.isActive)
+                .sort((a, b) => a.order - b.order);
+            setSections(activeSections);
+        } catch (error) {
+            console.error('Error fetching home layout:', error);
+            setSections([
+                { _id: 'default-hero', type: 'hero', order: 1, isActive: true, config: {} },
+                { _id: 'default-products', type: 'product_grid', title: 'Featured Products', order: 2, isActive: true, config: { productType: 'featured', limit: 4 } },
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const renderSection = (section: HomepageSection) => {
+        const { type, title, config, _id } = section;
+
+        switch (type) {
+            case 'hero':
+                return <HeroSection key={_id} config={config} />;
+            case 'product_grid':
+                return <ProductGridSection key={_id} title={title} config={config} />;
+            case 'collection_banners':
+                return <CollectionBanners key={_id} config={config} />;
+            case 'category_grid':
+                return <CategoryGrid key={_id} title={title} config={config} />;
+            case 'promotional_cards':
+                return <PromotionalCards key={_id} title={title} config={config} />;
+            case 'features':
+                return <FeaturesSection key={_id} title={title} config={config} />;
+            case 'newsletter':
+                return <NewsletterSection key={_id} config={config} />;
+            case 'custom_html':
+                return (
+                    <Box component="section" key={_id} py={6}>
+                        <Box className="container mx-auto px-4">
+                            <div dangerouslySetInnerHTML={{ __html: (config.html as string) || '' }} />
+                        </Box>
+                    </Box>
+                );
+            default:
+                return null;
+        }
+    };
+
+    if (loading) {
+        return (
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                minHeight="100vh"
+            >
+                <Box textAlign="center">
+                    <CircularProgress size={48} sx={{ mb: 2 }} />
+                    <Typography color="text.secondary">Loading...</Typography>
+                </Box>
+            </Box>
+        );
+    }
+
+    return (
+        <Box minHeight="100vh" data-testid="home-page">
+            {sections.map((section) => renderSection(section))}
+        </Box>
+    );
 }

@@ -82,7 +82,7 @@ export function createAppError(
  * Gets user-friendly error message (never shows internal details)
  */
 export function getUserFriendlyMessage(code: string): string {
-  return userFriendlyMessages[code] || userFriendlyMessages[ErrorCode.UNKNOWN_ERROR];
+  return userFriendlyMessages[code] || userFriendlyMessages[ErrorCode.UNKNOWN_ERROR] || 'An unexpected error occurred';
 }
 
 /**

@@ -1,39 +1,27 @@
+'use client';
+
 import type { ReactNode } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
 /**
  * Loading skeleton shown while page content is being prepared
  */
 export default function Loading(): ReactNode {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        fontFamily: 'sans-serif',
-      }}
-    >
-      <div style={{ textAlign: 'center' }}>
-        <div
-          style={{
-            width: '40px',
-            height: '40px',
-            border: '4px solid #f3f3f3',
-            borderTop: '4px solid #0070f3',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto',
-          }}
-        />
-        <p style={{ marginTop: '16px', color: '#666' }}>Loading...</p>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
-      </div>
-    </div>
-  );
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                flexDirection: 'column',
+                gap: 2,
+            }}
+        >
+            <CircularProgress size={48} />
+            <Typography color="text.secondary" fontWeight={500}>
+                Loading...
+            </Typography>
+        </Box>
+    );
 }

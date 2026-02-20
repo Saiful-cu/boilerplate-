@@ -1,5 +1,5 @@
 {
-  "name": "app-frontend",
+  "name": "noboraz-frontend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -12,9 +12,29 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\""
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@headlessui/react": "^2.1.0",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/lab": "^7.0.1-beta.21",
+    "@mui/material": "^7.3.7",
+    "axios": "^1.7.0",
+    "clsx": "^2.1.0",
+    "framer-motion": "^10.18.0",
+    "immer": "^11.1.4",
     "next": "^14.2.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.3.0",
+    "recharts": "^3.7.0",
+    "swiper": "^11.1.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",
